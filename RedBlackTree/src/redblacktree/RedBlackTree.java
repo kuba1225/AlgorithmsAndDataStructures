@@ -2,7 +2,7 @@ package redblacktree;
 
 import java.util.Random;
 
-public class RedBlackTree<T extends Comparable<T>> {
+public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K, V> {
 
     private static final boolean BLACK = false;
     private static final boolean RED = true;
@@ -15,7 +15,7 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     private RBTNode guard;
 
-    RedBlackTree() {
+    public RedBlackTree() {
 
         guard = new RBTNode();
         guard.color = BLACK;
@@ -34,8 +34,8 @@ public class RedBlackTree<T extends Comparable<T>> {
         RBTNode right;
         RBTNode up;
         boolean color;
-        int key;
-        T data;
+        K key;
+        V data;
 
         private void setBlackColor() {
             this.color = BLACK;
@@ -43,6 +43,14 @@ public class RedBlackTree<T extends Comparable<T>> {
 
         private void setRedColor() {
             this.color = RED;
+        }
+
+        private boolean hasBlackColor() {
+            return (this.color == BLACK);
+        }
+
+        private boolean hasRedColor() {
+            return (this.color == RED);
         }
     }
 
@@ -57,7 +65,13 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @param key klucz nowego węzła
      * @param obj nowy obiekt znajdujący się wewnątrz wstawianego węzła
      */
-    public void push(int key, T obj) {
+    @Override
+    public void setValue(K key, V obj) {
+        RBTNode tmp;
+        if ((tmp = findNodeWith(key)) != null) {
+            tmp.data = obj;
+            return;
+        }
         RBTNode t = new RBTNode();
         t.left = guard;
         t.right = guard;
@@ -68,12 +82,37 @@ public class RedBlackTree<T extends Comparable<T>> {
         if (t.up == guard) {
             root = t;
         } else {
-            compareKeys(t, key);
+            compareKeys(t, key, obj);
         }
 
         t.color = RED;//ustawiamy kolor nowego węzła na czerwony
 
         repaintRBTreeAfterPush(t);
+    }
+
+    @Override
+    public V getValue(K key) {
+        RBTNode t = findNodeWith(key);
+        if (t == null) {
+            return null;
+        } else {
+            return t.data;
+        }
+
+    }
+
+    private RBTNode findNodeWith(K key) {
+        RBTNode tmp = root;
+        while (tmp != guard) {
+            if (key.compareTo(tmp.key) == 0) {
+                return tmp;
+            } else if (key.compareTo(tmp.key) < 0) {
+                tmp = tmp.left;
+            } else {
+                tmp = tmp.right;
+            }
+        }
+        return null;
     }
 
     /**
@@ -83,20 +122,20 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @param t wstawiany węzeł
      * @param key klucz nowego węzła
      */
-    private void compareKeys(RBTNode t, int key) {
-        if (key < t.up.key) {//gdy klucz wstawianego węzła jest mniejszy od kluca jego ojca
+    private void compareKeys(RBTNode t, K key, V obj) {
+        if (key.compareTo(t.up.key) < 0) {//gdy klucz wstawianego węzła jest mniejszy od kluca jego ojca
             if (t.up.left == guard) {
                 t.up.left = t;
             } else {
                 t.up = t.up.left;
-                compareKeys(t, key);
+                compareKeys(t, key, obj);
             }
         } else {
             if (t.up.right == guard) {
                 t.up.right = t;
             } else {
                 t.up = t.up.right;
-                compareKeys(t, key);
+                compareKeys(t, key, obj);
             }
         }
 
@@ -218,55 +257,4 @@ public class RedBlackTree<T extends Comparable<T>> {
         //System.out.println("Rotacja w lewo");
     }
 
-    private void print(RBTNode t) {
-        System.out.println("ROOT -> Kolor: " + t.color + " klucz: " + t.key);
-        while (t.right != guard) {
-            System.out.println("Kolor: " + t.right.color + " klucz: " + t.right.key);
-            t = t.right;
-        }
-        System.out.println("GUARD -> Kolor: " + t.right.color + " klucz: " + t.right.key);
-    }
-
-    private void printTree() {
-        print(root);
-    }
-
-    public static void main(String[] args) {
-
-        Random r = new Random();
-        int x;
-        String y;
-        RedBlackTree<String> rbt = new RedBlackTree<String>();
-        //for (int i = 0; i < 1000; i++) {
-        x = r.nextInt(1000);
-        y = wordsBuilder(10);
-        //rbt.push(i, y);
-        //System.out.println("test " + i + " : " + x + ",\t" + y);
-        rbt.push(6, "test");
-        rbt.push(3, "test");
-        rbt.push(8, "test");
-        rbt.push(1, "test");
-        rbt.push(5, "test");
-        rbt.push(7, "test");
-        rbt.push(9, "test");
-        rbt.push(4, "test");
-        //}
-        rbt.printTree();
-    }
-
-    /**
-     * Metoda służąca do generowania losowych łańcuchów znaków.
-     *
-     * @param n długość łańcucha znaków do wygenerowania
-     * @return wygenerowany łańcuch znaków
-     */
-    public static String wordsBuilder(int n) {
-        Random r = new Random();
-        StringBuilder b = new StringBuilder();
-        b.append((char) ('A' + r.nextInt(26)));
-        for (int i = 1; i < n; i++) {
-            b.append((char) ('a' + r.nextInt(26)));
-        }
-        return b.toString();
-    }
 }
