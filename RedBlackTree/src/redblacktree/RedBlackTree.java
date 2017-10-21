@@ -73,10 +73,11 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
     @Override
     public void setValue(K key, V obj) {
         RBTNode tmp;
-        if ((tmp = findNodeWith(key)) != null) {
+        if ((tmp = findNodeWith(key)) != null) {//sprawdzamy tu czy w drzewie nie ma już węzła o podanym kluczu
             tmp.data = obj;
             return;
         }
+
         RBTNode t = new RBTNode();
         t.left = guard;
         t.right = guard;
@@ -85,7 +86,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
         t.data = obj;
 
         if (t.up == guard) {
-            root = t;
+            root = t;//jeżeli drzewo jest puste to wstawiany węzeł staje się korzeniem
         } else {
             compareKeys(t, key, obj);
         }
@@ -96,14 +97,14 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
     }
 
     /**
-     * Metoda ta służy do ustawiania węzłów w taki sposób aby jego klucze
-     * spełniały warunek binarnego drzewa przeszukiwań (BST)
+     * Metoda ta służy do ustawiania węzłów w taki sposób aby jego klucze jego
+     * węzłów spełniały warunek binarnego drzewa przeszukiwań (BST)
      *
      * @param t wstawiany węzeł
-     * @param key klucz nowego węzła
+     * @param key klucz wstawianego węzła
      */
     private void compareKeys(RBTNode t, K key, V obj) {
-        if (key.compareTo(t.up.key) < 0) {//gdy klucz wstawianego węzła jest mniejszy od kluca jego ojca
+        if (key.compareTo(t.up.key) < 0) {//gdy klucz wstawianego węzła jest mniejszy od klucza jego ojca
             if (t.up.left == guard) {
                 t.up.left = t;
             } else {
@@ -124,7 +125,8 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
      * Metoda ta służy do ustawiania nowego węzła w drzewie tak, aby po jego
      * wstawieniu drzewo spełniało warunek drzewa czerwono-czarnego.
      * Rozpatrujemy tu trzy podstawowe przypadki umiejscowienia węzłów jakie
-     * mogą wystąpić podczas wstawiania do drzewa nowego węzła.
+     * mogą wystąpić podczas wstawiania do drzewa nowego węzła oraz ich
+     * lustrzane wersje.
      *
      * @param t węzeł wstawiany do drzewa
      */
@@ -256,6 +258,12 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
 
     }
 
+    /**
+     * Metoda ta przeszukuje drzewo i zwraca węzeł o podanym kluczu
+     *
+     * @param key klucz poszukiwanego węzła
+     * @return węzeł o podanym kluczu
+     */
     private RBTNode findNodeWith(K key) {
         RBTNode tmp = root;
         while (tmp != guard) {

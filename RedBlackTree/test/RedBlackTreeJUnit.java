@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,6 +80,34 @@ public class RedBlackTreeJUnit {
         assertEquals(rbt.getColor(15), "czerwony");
         assertEquals(rbt.getColor(5), "czerwony");
         assertEquals(rbt.getColor(8), "czerwony");
+    }
+
+    /**
+     * Metoda ta sprawdza czy numer węzłów drzewa zwrócony przez funkcję równy
+     * jest ilości wstawionych węzłów
+     */
+    @Test
+    public void bigAmountOfRandomData() {
+        RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
+        for (int i = 0; i < 1000; i++) {
+            rbt.setValue(i, t.wordsBuilder());
+        }
+        assertEquals(rbt.getNumberOfAllNodes(), 1000);
+    }
+
+    /**
+     * Metoda ta testuje zachowanie drzewa wobec próby wstawienia dużej ilości
+     * węzłów o takim samym kluczu
+     */
+    @Test
+    public void thisSameKeyTest() {
+        RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
+        for (int i = 0; i < 1000; i++) {
+            rbt.setValue(1, "test");
+        }
+        assertEquals(rbt.getNumberOfAllNodes(), 1);
+        assertEquals(rbt.getColor(1), "czarny");
+        assertEquals(rbt.getValue(1), "test");
     }
 
     /**
@@ -275,6 +304,10 @@ public class RedBlackTreeJUnit {
         }
     }
 
+    /**
+     * Metoda ta testuje zachowanie drzewa po dodaniu węzłów o kluczach typu
+     * Integer
+     */
     @Test
     public void insertIntAsKey() {
         RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
@@ -313,6 +346,10 @@ public class RedBlackTreeJUnit {
         }
     }
 
+    /**
+     * Metoda ta testuje zachowanie drzewa po dodaniu węzłów o kluczach typu
+     * Character
+     */
     @Test
     public void insertCharAsKey() {
         RedBlackTree<Character, String> rbt = new RedBlackTree<Character, String>();
@@ -359,6 +396,10 @@ public class RedBlackTreeJUnit {
         }
     }
 
+    /**
+     * Metoda ta testuje zachowanie drzewa po dodaniu węzłów o kluczach typu
+     * String
+     */
     @Test
     public void insertStringAsKey() {
         RedBlackTree<String, String> rbt = new RedBlackTree<String, String>();
@@ -405,6 +446,10 @@ public class RedBlackTreeJUnit {
         }
     }
 
+    /**
+     * Metoda ta testuje zachowanie drzewa po dodaniu węzłów o kluczach typu
+     * Double
+     */
     @Test
     public void insertDoubleAsKey() {
         RedBlackTree<Double, String> rbt = new RedBlackTree<Double, String>();
@@ -452,15 +497,78 @@ public class RedBlackTreeJUnit {
     }
 
     /**
-     * Metoda ta sprawdza czy numer węzłów drzewa zwrócony przez funkcję równy
-     * jest ilości wstawionych węzłów
+     * Metoda ta testuje złożoność czasową operacji włożenie do mapy wartości
      */
     @Test
-    public void bigAmountOfRandomData() {
+    public void setValueTimeComplexity() throws IOException {
         RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
-        for (int i = 0; i < 1000; i++) {
-            rbt.setValue(i, t.wordsBuilder());
+
+        long start, stop;
+        long r16, r32, r64, r128, r256, r512, r1024, r2048;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 16; i++) {
+            rbt.setValue(r.nextInt(), "test");
         }
-        assertEquals(rbt.getNumberOfAllNodes(), 1000);
+        stop = System.nanoTime();
+        r16 = stop - start;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 32; i++) {
+            rbt.setValue(r.nextInt(), "test");
+        }
+        stop = System.nanoTime();
+        r32 = stop - start;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 64; i++) {
+            rbt.setValue(r.nextInt(), "test");
+        }
+        stop = System.nanoTime();
+        r64 = stop - start;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 128; i++) {
+            rbt.setValue(r.nextInt(), "test");
+        }
+        stop = System.nanoTime();
+        r128 = stop - start;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 256; i++) {
+            rbt.setValue(r.nextInt(), "test");
+        }
+        stop = System.nanoTime();
+        r256 = stop - start;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 512; i++) {
+            rbt.setValue(r.nextInt(), "test");
+        }
+        stop = System.nanoTime();
+        r512 = stop - start;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 1024; i++) {
+            rbt.setValue(r.nextInt(), "test");
+        }
+        stop = System.nanoTime();
+        r1024 = stop - start;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 2048; i++) {
+            rbt.setValue(r.nextInt(), "test");
+        }
+        stop = System.nanoTime();
+        r2048 = stop - start;
+
+        System.out.println("Czas włożenia 16 elementów do drzewa = " + r16 + " ns");
+        System.out.println("Czas włożenia 32 elementów do drzewa = " + r32 + " ns");
+        System.out.println("Czas włożenia 64 elementów do drzewa = " + r64 + " ns");
+        System.out.println("Czas włożenia 128 elementów do drzewa = " + r128 + " ns");
+        System.out.println("Czas włożenia 256 elementów do drzewa = " + r256 + " ns");
+        System.out.println("Czas włożenia 512 elementów do drzewa = " + r512 + " ns");
+        System.out.println("Czas włożenia 1024 elementów do drzewa = " + r1024 + " ns");
+        System.out.println("Czas włożenia 2048 elementów do drzewa = " + r2048 + " ns");
     }
 }
