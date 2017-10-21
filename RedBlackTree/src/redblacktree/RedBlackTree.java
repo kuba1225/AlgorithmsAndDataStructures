@@ -278,6 +278,10 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
         return getNumberOfNodes(root);
     }
 
+    public K getRootKey() {
+        return root.key;
+    }
+
     public static void main(String[] args) {
         int x;
         String y;

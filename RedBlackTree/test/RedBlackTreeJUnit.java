@@ -8,6 +8,7 @@ import redblacktree.RedBlackTree;
 public class RedBlackTreeJUnit {
 
     Random r;
+    TestTools t;
 
     public RedBlackTreeJUnit() {
     }
@@ -15,6 +16,7 @@ public class RedBlackTreeJUnit {
     @Before
     public void setUp() {
         r = new Random();
+        t = new TestTools();
     }
 
     /**
@@ -86,14 +88,14 @@ public class RedBlackTreeJUnit {
     @Test
     public void insertStringAsData() {
         RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
-        String x1 = wordsBuilder(r.nextInt(10) + 1);
-        String x2 = wordsBuilder(r.nextInt(10) + 1);
-        String x3 = wordsBuilder(r.nextInt(10) + 1);
-        String x4 = wordsBuilder(r.nextInt(10) + 1);
-        String x5 = wordsBuilder(r.nextInt(10) + 1);
-        String x6 = wordsBuilder(r.nextInt(10) + 1);
-        String x7 = wordsBuilder(r.nextInt(10) + 1);
-        String x8 = wordsBuilder(r.nextInt(10) + 1);
+        String x1 = t.wordsBuilder(r.nextInt(10) + 1);
+        String x2 = t.wordsBuilder(r.nextInt(10) + 1);
+        String x3 = t.wordsBuilder(r.nextInt(10) + 1);
+        String x4 = t.wordsBuilder(r.nextInt(10) + 1);
+        String x5 = t.wordsBuilder(r.nextInt(10) + 1);
+        String x6 = t.wordsBuilder(r.nextInt(10) + 1);
+        String x7 = t.wordsBuilder(r.nextInt(10) + 1);
+        String x8 = t.wordsBuilder(r.nextInt(10) + 1);
 
         rbt.setValue(11, x1);
         rbt.setValue(2, x2);
@@ -130,14 +132,14 @@ public class RedBlackTreeJUnit {
     @Test
     public void insertLongStringAsData() {
         RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
-        String x1 = wordsBuilder(100) + wordsBuilder(100);
-        String x2 = wordsBuilder(100) + wordsBuilder(100);
-        String x3 = wordsBuilder(100) + wordsBuilder(100);
-        String x4 = wordsBuilder(100) + wordsBuilder(100);
-        String x5 = wordsBuilder(100) + wordsBuilder(100);
-        String x6 = wordsBuilder(100) + wordsBuilder(100);
-        String x7 = wordsBuilder(100) + wordsBuilder(100);
-        String x8 = wordsBuilder(100) + wordsBuilder(100);
+        String x1 = t.wordsBuilder(100) + t.wordsBuilder(100);
+        String x2 = t.wordsBuilder(100) + t.wordsBuilder(100);
+        String x3 = t.wordsBuilder(100) + t.wordsBuilder(100);
+        String x4 = t.wordsBuilder(100) + t.wordsBuilder(100);
+        String x5 = t.wordsBuilder(100) + t.wordsBuilder(100);
+        String x6 = t.wordsBuilder(100) + t.wordsBuilder(100);
+        String x7 = t.wordsBuilder(100) + t.wordsBuilder(100);
+        String x8 = t.wordsBuilder(100) + t.wordsBuilder(100);
 
         rbt.setValue(11, x1);
         rbt.setValue(2, x2);
@@ -256,6 +258,56 @@ public class RedBlackTreeJUnit {
     }
 
     @Test
+    public void insertCharIntKey() {
+        RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
+
+        /**
+         * Klucze:
+         */
+        int k1 = 11;
+        int k2 = 2;
+        int k3 = 14;
+        int k4 = 1;
+        int k5 = 7;
+        int k6 = 15;
+        int k7 = 5;
+        int k8 = 8;
+
+        rbt.setValue(k1, "test1");
+        rbt.setValue(k2, "test2");
+        rbt.setValue(k3, "test3");
+        rbt.setValue(k4, "test4");
+        rbt.setValue(k5, "test5");
+        rbt.setValue(k6, "test6");
+        rbt.setValue(k7, "test7");
+        rbt.setValue(k8, "test8");
+
+        /**
+         * Sprawdzamy czy poszczególne węzły drzewa mają odpowiednie kolory:
+         */
+        assertEquals(rbt.getColor(k1), "czarny");
+        assertEquals(rbt.getColor(k2), "czerwony");
+        assertEquals(rbt.getColor(k3), "czarny");
+        assertEquals(rbt.getColor(k4), "czarny");
+        assertEquals(rbt.getColor(k5), "czarny");
+        assertEquals(rbt.getColor(k6), "czerwony");
+        assertEquals(rbt.getColor(k7), "czerwony");
+        assertEquals(rbt.getColor(k8), "czerwony");
+
+        /**
+         * Sprawdzamy czy klucze zwracają odpowiednie dane:
+         */
+        assertEquals(rbt.getValue(k1), "test1");
+        assertEquals(rbt.getValue(k2), "test2");
+        assertEquals(rbt.getValue(k3), "test3");
+        assertEquals(rbt.getValue(k4), "test4");
+        assertEquals(rbt.getValue(k5), "test5");
+        assertEquals(rbt.getValue(k6), "test6");
+        assertEquals(rbt.getValue(k7), "test7");
+        assertEquals(rbt.getValue(k8), "test8");
+    }
+
+    @Test
     public void insertCharAsKey() {
         RedBlackTree<Character, String> rbt = new RedBlackTree<Character, String>();
 
@@ -312,14 +364,14 @@ public class RedBlackTreeJUnit {
         /**
          * Klucze:
          */
-        String k1 = wordsBuilder((char) (65 + 11), 10);
-        String k2 = wordsBuilder((char) (65 + 2), 10);
-        String k3 = wordsBuilder((char) (65 + 14), 10);
-        String k4 = wordsBuilder((char) (65 + 1), 10);
-        String k5 = wordsBuilder((char) (65 + 7), 10);
-        String k6 = wordsBuilder((char) (65 + 15), 10);
-        String k7 = wordsBuilder((char) (65 + 5), 10);
-        String k8 = wordsBuilder((char) (65 + 8), 10);
+        String k1 = t.wordsBuilder(10, (char) (65 + 11));
+        String k2 = t.wordsBuilder(10, (char) (65 + 2));
+        String k3 = t.wordsBuilder(10, (char) (65 + 14));
+        String k4 = t.wordsBuilder(10, (char) (65 + 1));
+        String k5 = t.wordsBuilder(10, (char) (65 + 7));
+        String k6 = t.wordsBuilder(10, (char) (65 + 15));
+        String k7 = t.wordsBuilder(10, (char) (65 + 5));
+        String k8 = t.wordsBuilder(10, (char) (65 + 8));
 
         rbt.setValue(k1, "test1");
         rbt.setValue(k2, "test2");
@@ -356,50 +408,79 @@ public class RedBlackTreeJUnit {
     }
 
     @Test
-    public void randomNumersTest() {
-        int x;
-        String y;
+    public void insertDoubleAsKey() {
+        RedBlackTree<Double, String> rbt = new RedBlackTree<Double, String>();
+
+        /**
+         * Klucze:
+         */
+        double k1 = 11 + r.nextDouble();
+        double k2 = 2 + r.nextDouble();
+        double k3 = 14 + r.nextDouble();
+        double k4 = 1 + r.nextDouble();
+        double k5 = 7 + r.nextDouble();
+        double k6 = 15 + r.nextDouble();
+        double k7 = 5 + r.nextDouble();
+        double k8 = 8 + r.nextDouble();
+
+        rbt.setValue(k1, "test1");
+        rbt.setValue(k2, "test2");
+        rbt.setValue(k3, "test3");
+        rbt.setValue(k4, "test4");
+        rbt.setValue(k5, "test5");
+        rbt.setValue(k6, "test6");
+        rbt.setValue(k7, "test7");
+        rbt.setValue(k8, "test8");
+
+        /**
+         * Sprawdzamy czy poszczególne węzły drzewa mają odpowiednie kolory:
+         */
+        assertEquals(rbt.getColor(k1), "czarny");
+        assertEquals(rbt.getColor(k2), "czerwony");
+        assertEquals(rbt.getColor(k3), "czarny");
+        assertEquals(rbt.getColor(k4), "czarny");
+        assertEquals(rbt.getColor(k5), "czarny");
+        assertEquals(rbt.getColor(k6), "czerwony");
+        assertEquals(rbt.getColor(k7), "czerwony");
+        assertEquals(rbt.getColor(k8), "czerwony");
+
+        /**
+         * Sprawdzamy czy klucze zwracają odpowiednie dane:
+         */
+        assertEquals(rbt.getValue(k1), "test1");
+        assertEquals(rbt.getValue(k2), "test2");
+        assertEquals(rbt.getValue(k3), "test3");
+        assertEquals(rbt.getValue(k4), "test4");
+        assertEquals(rbt.getValue(k5), "test5");
+        assertEquals(rbt.getValue(k6), "test6");
+        assertEquals(rbt.getValue(k7), "test7");
+        assertEquals(rbt.getValue(k8), "test8");
+    }
+
+    /**
+     * Metoda ta sprawdza czy numer węzłów drzewa zwrócony przez funkcję równy
+     * jest ilości wstawionych węzłów
+     */
+    @Test
+    public void bigAmountOfRandomData() {
         RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
-        for (int i = 0; i < 100; i++) {
-            x = r.nextInt(100);
-            y = wordsBuilder(10);
-            rbt.setValue(x, y);
-            //System.out.println("test " + i + " : " + x + ",\t" + y);
-
+        for (int i = 0; i < 1000; i++) {
+            rbt.setValue(i, t.wordsBuilder());
         }
+        assertEquals(rbt.getNumberOfAllNodes(), 1000);
     }
 
     /**
-     * Metoda służąca do generowania losowych łańcuchów znaków.
-     *
-     * @param n długość łańcucha znaków do wygenerowania
-     * @return wygenerowany łańcuch znaków
+     * Metoda ta sprawdza czy korzeń drzewa po wprowadzeniu dużej ilości danych
+     * pozostaje czarny
      */
-    public static String wordsBuilder(int n) {
-        Random r = new Random();
-        StringBuilder b = new StringBuilder();
-        b.append((char) ('A' + r.nextInt(26)));
-        for (int i = 1; i < n; i++) {
-            b.append((char) ('a' + r.nextInt(26)));
+    @Test
+    public void rbtreeRootTest() {
+        RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
+        for (int i = 0; i < 1000; i++) {
+            rbt.setValue(r.nextInt(100), t.wordsBuilder());
         }
-        return b.toString();
-    }
-
-    /**
-     * Metoda służąca do generowania losowych łańcuchów znaków.
-     *
-     * @param x pierwszy znak danego Stringa
-     * @param n długość łańcucha znaków do wygenerowania
-     * @return wygenerowany łańcuch znaków
-     */
-    public static String wordsBuilder(char s, int n) {
-        Random r = new Random();
-        StringBuilder b = new StringBuilder();
-        b.append(s);
-        for (int i = 1; i < n; i++) {
-            b.append((char) ('a' + r.nextInt(26)));
-        }
-        return b.toString();
+        assertEquals(rbt.getColor(rbt.getRootKey()), "czarny");
     }
 
     /*private void print(RedBlackTree.RBTNode t) {
