@@ -111,6 +111,19 @@ public class RedBlackTreeJUnit {
     }
 
     /**
+     * Metoda ta testuje zachowanie drzewa wobec próby pobrania z drzewa węzła o
+     * kluczu który nie został podany
+     */
+    @Test
+    public void getValueOfNotExistingNode() {
+        RedBlackTree<String, String> rbt = new RedBlackTree<String, String>();
+        rbt.setValue("test1", t.wordsBuilder());
+        rbt.setValue("test2", t.wordsBuilder());
+
+        assertEquals(rbt.getValue("test3"), null);
+    }
+
+    /**
      * Metoda ta testuje zachowanie drzewa po dodaniu do jego węzłów danych typu
      * String
      */
@@ -504,6 +517,9 @@ public class RedBlackTreeJUnit {
         RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
 
         long start, stop;
+        /**
+         * Czasy wkładania do mapy poszczególnych elementów
+         */
         long r16, r32, r64, r128, r256, r512, r1024, r2048;
 
         start = System.nanoTime();
