@@ -1,19 +1,12 @@
 package redblacktree;
 
-import java.util.Random;
-
 public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K, V> {
 
     private static final boolean BLACK = false;
     private static final boolean RED = true;
-    /**
-     * Reprezentuje korzeń drzewa czerwono-czarnego.
-     */
-    private RBTNode root;
-    /**
-     * Reprezentuje strażnika drzewa czerwono-czarnego.
-     */
-    private RBTNode guard;
+
+    private RBTNode root;//korzeń drzewa
+    private RBTNode guard;//strażnik drzewa - pełni rolę liści
 
     public RedBlackTree() {
 
@@ -37,29 +30,36 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
         K key;
         V data;
 
+        /**
+         * Metoda ta ustawia kolor danego węzła na czarny
+         */
         private void setBlackColor() {
             this.color = BLACK;
         }
 
+        /**
+         * Metoda ta ustawia kolor danego węzła na czerwony
+         */
         private void setRedColor() {
             this.color = RED;
         }
 
+        /**
+         * Metoda ta sprawdza czy dany węzeł ma kolor czarny
+         *
+         * @return zwraca "true" jeżeli węzeł jest czarny
+         */
         private boolean hasBlackColor() {
             return (this.color == BLACK);
         }
 
+        /**
+         * Metoda ta sprawdza czy dany węzeł ma kolor czerwony
+         *
+         * @return zwraca "true" jeżeli węzeł jest czerwony
+         */
         private boolean hasRedColor() {
             return (this.color == RED);
-        }
-    }
-
-    public String getColor(K key) {
-        RBTNode t = findNodeWith(key);
-        if (t.color == RED) {
-            return "czerwony";
-        } else {
-            return "czarny";
         }
     }
 
@@ -68,7 +68,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
      * czerwono-czarnego.
      *
      * @param key klucz nowego węzła
-     * @param obj nowy obiekt znajdujący się wewnątrz wstawianego węzła
+     * @param obj nowe dane do umieszczenia we wstawianym węźle
      */
     @Override
     public void setValue(K key, V obj) {
@@ -95,34 +95,9 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
         repaintRBTreeAfterPush(t);
     }
 
-    @Override
-    public V getValue(K key) {
-        RBTNode t = findNodeWith(key);
-        if (t == null) {
-            return null;
-        } else {
-            return t.data;
-        }
-
-    }
-
-    private RBTNode findNodeWith(K key) {
-        RBTNode tmp = root;
-        while (tmp != guard) {
-            if (key.compareTo(tmp.key) == 0) {
-                return tmp;
-            } else if (key.compareTo(tmp.key) < 0) {
-                tmp = tmp.left;
-            } else {
-                tmp = tmp.right;
-            }
-        }
-        return null;
-    }
-
     /**
      * Metoda ta służy do ustawiania węzłów w taki sposób aby jego klucze
-     * spełniały warunek binarnego drzewa przeszukiwań.
+     * spełniały warunek binarnego drzewa przeszukiwań (BST)
      *
      * @param t wstawiany węzeł
      * @param key klucz nowego węzła
@@ -155,14 +130,15 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
      */
     private void repaintRBTreeAfterPush(RBTNode t) {
         RBTNode uncle;
-        while (t != root && t.up.color == RED) {
+        if (t != root && t.up.hasRedColor()) {
             if (t.up == t.up.up.left) {
                 uncle = t.up.up.right;//"wujek" wstawianego węzła
-                if (uncle.color == RED) {//PIERWSZY PRZYPADEK
+                if (uncle.hasRedColor()) {//PIERWSZY PRZYPADEK
                     t.up.setBlackColor();
                     uncle.setBlackColor();
                     t.up.up.setRedColor();
                     t = t.up.up;//tymcasowy węzeł staje się "dziadkiem"
+                    repaintRBTreeAfterPush(t);
                 } else {
                     if (t == t.up.right) {//DRUGI PRZYPADEK
                         t = t.up;
@@ -171,14 +147,16 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
                     t.up.setBlackColor();//TRZECI PRZYPADEK
                     t.up.up.setRedColor();
                     rotacjaPrawo(t.up.up);
+                    repaintRBTreeAfterPush(t);
                 }
             } else {//Przypadki lustrzane
                 uncle = t.up.up.left;
-                if (uncle.color == RED) {//PIERWSZY PRZYPADEK
+                if (uncle.hasRedColor()) {//PIERWSZY PRZYPADEK
                     t.up.setBlackColor();
                     uncle.setBlackColor();
                     t.up.up.setRedColor();
                     t = t.up.up;//tymcasowy węzeł staje się "dziadkiem"
+                    repaintRBTreeAfterPush(t);
                 } else {
                     if (t == t.up.left) {//DRUGI PRZYPADEK
                         t = t.up;
@@ -187,6 +165,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
                     t.up.setBlackColor();//TRZECI PRZYPADEK
                     t.up.up.setRedColor();
                     rotacjaLewo(t.up.up);
+                    repaintRBTreeAfterPush(t);
                 }
             }
         }
@@ -259,9 +238,54 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
         }
     }
 
-    /*public RBTNode getRoot() {
-        return root;
-    }*/
+    /**
+     * Metoda ta służy do pobierania danych z węzłów drzewa czerwono-czarnego na
+     * podstawie podanego klucza
+     *
+     * @param key klucz do danego węzła
+     * @return dane znajdujące się wewnątrz wstawianego węzła
+     */
+    @Override
+    public V getValue(K key) {
+        RBTNode t = findNodeWith(key);
+        if (t == null) {
+            return null;
+        } else {
+            return t.data;
+        }
+
+    }
+
+    private RBTNode findNodeWith(K key) {
+        RBTNode tmp = root;
+        while (tmp != guard) {
+            if (key.compareTo(tmp.key) == 0) {
+                return tmp;
+            } else if (key.compareTo(tmp.key) < 0) {
+                tmp = tmp.left;
+            } else {
+                tmp = tmp.right;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Metoda zwracająca liczbę węzłów w całym drzewie (od korzenia do jego
+     * liści)
+     *
+     * @return liczba węzłów w drzewie czerwono-czarnym
+     */
+    public int getNumberOfAllNodes() {
+        return getNumberOfNodes(root);
+    }
+
+    /**
+     * Metoda zwracająca liczbę węzłów w drzewie od podanego węzła do jego liści
+     *
+     * @param r węzeł od którego należy rozpocząc liczenie węzłów
+     * @return liczba węzłów od podanego węzła do jego liści
+     */
     private int getNumberOfNodes(RBTNode r) {
 
         int number = 1;
@@ -274,65 +298,18 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
         }
     }
 
-    public int getNumberOfAllNodes() {
-        return getNumberOfNodes(root);
-    }
-
-    public K getRootKey() {
-        return root.key;
-    }
-
-    public static void main(String[] args) {
-        int x;
-        String y;
-        RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
-        rbt.setValue(6, "test");
-        rbt.setValue(3, "test");
-        rbt.setValue(8, "test");
-        rbt.setValue(1, "test");
-        rbt.setValue(5, "test");
-        rbt.setValue(7, "test");
-        rbt.setValue(9, "test");
-        rbt.setValue(4, "test");
-        rbt.printTree();
-        System.out.println("\nLiczba elementów w drzewie to " + rbt.getNumberOfAllNodes());
-    }
-
     /**
-     * Metoda służąca do generowania losowych łańcuchów znaków.
+     * Metoda ta zwraca kolor węzła o podanym kluczu
      *
-     * @param n długość łańcucha znaków do wygenerowania
-     * @return wygenerowany łańcuch znaków
+     * @param key klucz do węzła
+     * @return kolor węzła o podanym kluczu
      */
-    public static String wordsBuilder(int n) {
-        Random r = new Random();
-        StringBuilder b = new StringBuilder();
-        b.append((char) ('A' + r.nextInt(26)));
-        for (int i = 1; i < n; i++) {
-            b.append((char) ('a' + r.nextInt(26)));
+    public String getColor(K key) {
+        RBTNode t = findNodeWith(key);
+        if (t.color == RED) {
+            return "czerwony";
+        } else {
+            return "czarny";
         }
-        return b.toString();
-    }
-
-    private void print(RedBlackTree.RBTNode t) {
-        RedBlackTree.RBTNode tmp = t;
-        System.out.println("ROOT -> Kolor: " + t.color + " klucz: " + t.key + " wartość: " + t.right.data);
-        System.out.println("\n~~LEFT~~");
-        while (t.left != guard) {
-            System.out.println("Kolor: " + t.left.color + " klucz: " + t.left.key + " wartość: " + t.left.data);
-            t = t.left;
-        }
-        System.out.println("GUARD -> Kolor: " + t.right.color + " klucz: " + t.right.key + " wartość: " + t.right.data);
-        t = tmp;
-        System.out.println("\n~~RIGHT~~");
-        while (t.right != guard) {
-            System.out.println("Kolor: " + t.right.color + " klucz: " + t.right.key + " wartość: " + t.right.data);
-            t = t.right;
-        }
-        System.out.println("GUARD -> Kolor: " + t.right.color + " klucz: " + t.right.key + " wartość: " + t.right.data);
-    }
-
-    private void printTree() {
-        print(root);
     }
 }
