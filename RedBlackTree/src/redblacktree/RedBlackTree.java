@@ -9,7 +9,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
     /**
      * Reprezentuje korzeń drzewa czerwono-czarnego.
      */
-    private RBTNode root = null;
+    private RBTNode root;
     /**
      * Reprezentuje strażnika drzewa czerwono-czarnego.
      */
@@ -54,8 +54,13 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
         }
     }
 
-    private boolean getColor(RBTNode n) {
-        return n.color;
+    public String getColor(K key) {
+        RBTNode t = findNodeWith(key);
+        if (t.color == RED) {
+            return "czerwony";
+        } else {
+            return "czarny";
+        }
     }
 
     /**
@@ -85,7 +90,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
             compareKeys(t, key, obj);
         }
 
-        t.color = RED;//ustawiamy kolor nowego węzła na czerwony
+        t.setRedColor();//ustawiamy kolor nowego węzła na czerwony
 
         repaintRBTreeAfterPush(t);
     }
@@ -138,7 +143,6 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
                 compareKeys(t, key, obj);
             }
         }
-
     }
 
     /**
@@ -186,7 +190,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
                 }
             }
         }
-        root.color = BLACK;//ustawiamy kolor korzenia na czarny (w razie gdyby w wyniku powyższych operacji stał się czerwony)
+        root.setBlackColor();//ustawiamy kolor korzenia na czarny (w razie gdyby w wyniku powyższych operacji stał się czerwony)
 
     }
 
@@ -221,7 +225,6 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
                 root = tmp1;
             }
         }
-        //System.out.println("Rotacja w prawo");
     }
 
     /**
@@ -254,7 +257,78 @@ public class RedBlackTree<K extends Comparable<K>, V> implements MapInterface<K,
                 root = tmp1;
             }
         }
-        //System.out.println("Rotacja w lewo");
     }
 
+    /*public RBTNode getRoot() {
+        return root;
+    }*/
+    private int getNumberOfNodes(RBTNode r) {
+
+        int number = 1;
+        if (r == guard) {
+            return 0;
+        } else {
+            number += getNumberOfNodes(r.left);
+            number += getNumberOfNodes(r.right);
+            return number;
+        }
+    }
+
+    public int getNumberOfAllNodes() {
+        return getNumberOfNodes(root);
+    }
+
+    public static void main(String[] args) {
+        int x;
+        String y;
+        RedBlackTree<Integer, String> rbt = new RedBlackTree<Integer, String>();
+        rbt.setValue(6, "test");
+        rbt.setValue(3, "test");
+        rbt.setValue(8, "test");
+        rbt.setValue(1, "test");
+        rbt.setValue(5, "test");
+        rbt.setValue(7, "test");
+        rbt.setValue(9, "test");
+        rbt.setValue(4, "test");
+        rbt.printTree();
+        System.out.println("\nLiczba elementów w drzewie to " + rbt.getNumberOfAllNodes());
+    }
+
+    /**
+     * Metoda służąca do generowania losowych łańcuchów znaków.
+     *
+     * @param n długość łańcucha znaków do wygenerowania
+     * @return wygenerowany łańcuch znaków
+     */
+    public static String wordsBuilder(int n) {
+        Random r = new Random();
+        StringBuilder b = new StringBuilder();
+        b.append((char) ('A' + r.nextInt(26)));
+        for (int i = 1; i < n; i++) {
+            b.append((char) ('a' + r.nextInt(26)));
+        }
+        return b.toString();
+    }
+
+    private void print(RedBlackTree.RBTNode t) {
+        RedBlackTree.RBTNode tmp = t;
+        System.out.println("ROOT -> Kolor: " + t.color + " klucz: " + t.key + " wartość: " + t.right.data);
+        System.out.println("\n~~LEFT~~");
+        while (t.left != guard) {
+            System.out.println("Kolor: " + t.left.color + " klucz: " + t.left.key + " wartość: " + t.left.data);
+            t = t.left;
+        }
+        System.out.println("GUARD -> Kolor: " + t.right.color + " klucz: " + t.right.key + " wartość: " + t.right.data);
+        t = tmp;
+        System.out.println("\n~~RIGHT~~");
+        while (t.right != guard) {
+            System.out.println("Kolor: " + t.right.color + " klucz: " + t.right.key + " wartość: " + t.right.data);
+            t = t.right;
+        }
+        System.out.println("GUARD -> Kolor: " + t.right.color + " klucz: " + t.right.key + " wartość: " + t.right.data);
+    }
+
+    private void printTree() {
+        print(root);
+    }
 }
